@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>login</title>
 </head>
 <body>
     <form action="", method="POST">
-        
+        {% csrf_token %}
+        <label for="name">user name</label>
+        <input type="text", id="name", name="username", placeholder="ENTER NAME...">
+        <label for="password">password</label>
+        <input type="password", id="password", name="password", placeholder="PASSWORD">
+        <input type="submit", value="LOGIN">
     </form>
+    <p>DON'T HAVE AN ACCOUNT YET</p>
+    <a href="{% url 'signup_page' %}">SIGNUP</a>
 </body>
 </html>
