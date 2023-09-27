@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from .model_forms import *
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models import Q
 
 def welcome_page(request):
     pass
@@ -53,11 +54,25 @@ def signup_page(request):
     
 
 
-@login_required(login_url="login_page")
+@login_required(login_url='login_page')
 def home(request):
-    # tasks = Task.objects.all(user=request.user)
-    # context = {"tasks": tasks}
-    return render(request, "main/home.html")
+    tasks = Task.objects.filter(Q(user=request.user)&Q(completed=False))
+    tasks_c = Task.objects.filter(Q(user=request.user)&Q(completed=True)).order_by("-date_of_completion")
+
+    subtasks = []
+    for task in tasks:
+        for subtask in task.subtask_set.filter(completed=False):
+            subtasks.append(subtask)
+    s_subtasks = (sorted(subtasks, key=lambda x: x.deadline))[0:9]
+
+    # TOMORROW
+    # start by running and testing 
+    # then go on to creat public tasks that fall under the shared topics
+    # then show the most popular topics
+
+
+    context = {"tasks": tasks, "subtasks":s_subtasks, "completed_tasks":tasks_c}
+    return render(request, "main/home.html", context)
 
 
 def user_profile(request):

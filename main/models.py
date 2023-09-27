@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import datetime
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -38,6 +39,8 @@ class Task(models.Model):
     deadline = models.DateTimeField(max_length=50, blank=True)
     completed = models.BooleanField(default=False)
     description = models.TextField(max_length=50, blank=False)
+    date_of_completion = models.DateTimeField(default=datetime.datetime.now())
+    
 
     def __str__(self) -> str:
         return self.name
@@ -52,6 +55,7 @@ class Subtask(models.Model):
     description = models.TextField(blank=False, max_length=40)
     deadline = models.DateTimeField(blank=False)
     completed = models.BooleanField(default=False)
+    date_of_completion = models.DateTimeField(default=datetime.datetime.now())
 
     def __str__(self):
         return self.name
