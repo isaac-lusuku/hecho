@@ -39,6 +39,7 @@ class Task(models.Model):
     deadline = models.DateTimeField(max_length=50, blank=True)
     completed = models.BooleanField(default=False)
     description = models.TextField(max_length=50, blank=False)
+    public = models.BooleanField(default=False)
     date_of_completion = models.DateTimeField(default=datetime.datetime.now())
     
 
@@ -59,6 +60,11 @@ class Subtask(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class Reviews(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    review = models.TextField(max_length=50, blank=False)
     
 
 # add reviews and profile pictures for the users

@@ -10,7 +10,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 
 def welcome_page(request):
-    pass
+    reviews = Reviews.objects.all()
+    context = {"reviews":reviews}
+    return render(request, "main/welcome.html", context)
 
 
 def login_page(request):
@@ -68,10 +70,15 @@ def home(request):
     # TOMORROW
     # start by running and testing 
     # then go on to creat public tasks that fall under the shared topics
+    public = list(Task.objects.filter(Q(public=True)&Q(completed=False)))
+    for task in tasks:
+        public.remove(task)
     # then show the most popular topics
+    popular_topics= list(Topic.objects.all())
+    popular_topics.sort(key=lambda x: len(list(x.task_set.all())))
 
 
-    context = {"tasks": tasks, "subtasks":s_subtasks, "completed_tasks":tasks_c}
+    context = {"tasks": tasks, "subtasks":s_subtasks, "completed_tasks":tasks_c, "public":public, "popular_topics":popular_topics}
     return render(request, "main/home.html", context)
 
 
@@ -86,3 +93,5 @@ def task_page(request):
 # if you can also add in some sort of diaries into the app
 # try to include an error handler page with the messages for the errors tha have occured
 #make sure you dd the possibilities for the user to add the remaining information
+# add fuctionality where a user can request to follow another user's task
+# and more than one user can work on a similar task
