@@ -9,11 +9,21 @@ from .model_forms import *
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 from datetime import datetime
+from .serializer import *
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-def welcome_page(request):
-    reviews = Reviews.objects.all()
-    context = {"reviews":reviews}
-    return render(request, "main/welcome.html", context)
+
+@api_view(["GET", "POST"])
+def reviews(request):
+    # requsting for reviews
+    if request.method == "GET":
+        reviews = Reviews.objects.all()
+        serializer = ReviewsSerializer(reviews, many=True)
+        return Response(serializer.data)
+    # for adding reviews
+    # read about user authentication and how to know the logged in user
+    
 
 
 def login_page(request):
