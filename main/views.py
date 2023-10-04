@@ -12,15 +12,24 @@ from datetime import datetime
 from .serializer import *
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 
 
-@api_view(["GET", "POST"])
+@api_view(["GET", "POST", "PUT"])
 def reviews(request):
     # requsting for reviews
     if request.method == "GET":
         reviews = Reviews.objects.all()
         serializer = ReviewsSerializer(reviews, many=True)
         return Response(serializer.data)
+    
+    elif request.method == "POST":
+        serializer = ReviewsSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return(status.HTTP_200_OK)
+
+    # add delete and put functionality
     # for adding reviews
     # read about user authentication and how to know the logged in user
     

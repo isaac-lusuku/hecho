@@ -63,7 +63,7 @@ class Subtask(models.Model):
     
 
 class Reviews(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     review = models.TextField(max_length=50, blank=False)
     
 
