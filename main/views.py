@@ -15,23 +15,52 @@ from rest_framework.response import Response
 from rest_framework import status
 
 
-@api_view(["GET", "POST", "PUT"])
+@api_view(["GET", "POST", "PUT", "DELETE"])
 def reviews(request):
     # requsting for reviews
     if request.method == "GET":
         reviews = Reviews.objects.all()
         serializer = ReviewsSerializer(reviews, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status.HTTP_200_OK)
     
+    # this creats a new review
     elif request.method == "POST":
-        serializer = ReviewsSerializer(data= request.data)
+        serializer = ReviewsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return(status.HTTP_200_OK)
+        
 
-    # add delete and put functionality
-    # for adding reviews
-    # read about user authentication and how to know the logged in user
+@api_view(["GET", "PUT", "DELETE"])
+def review(request, pk):
+
+    # fetching the requested review from the database
+    try:
+         review = Reviews.objects.get(pk=pk)
+    except:
+        return Response(status.HTTP_404_NOT_FOUND)
+    
+    # sending the review 
+    if request.method == "GET":
+        serializer = ReviewsSerializer(review, many=False)
+        return Response(serializer.data, status.HTTP_200_OK)
+    
+    # for updating the review
+    elif request.method == "PUT":
+        serializer = ReviewsSerializer(review, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status.HTTP_200_OK)
+        
+    # deleting a review from the database
+    elif request.method == "DELETE":
+        review.delete()
+        return Response(status.HTTP_200_OK)
+    
+    else:
+        return Response(status.HTTP_400_BAD_REQUEST)
+
+# read about user authentication and how to know the logged in user
     
 
 

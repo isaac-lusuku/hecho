@@ -35,12 +35,12 @@ class Task(models.Model):
     name = models.CharField(blank=False, null=False, max_length=20)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    date_created = models.DateTimeField(null=False, blank=False)
+    date_created = models.DateTimeField(auto_now_add=True)
     deadline = models.DateTimeField(max_length=50, blank=True)
     completed = models.BooleanField(default=False)
     description = models.TextField(max_length=50, blank=False)
     public = models.BooleanField(default=False)
-    date_of_completion = models.DateTimeField(default=datetime.datetime.now())
+    date_of_completion = models.DateTimeField()
     
 
     def __str__(self) -> str:
@@ -63,6 +63,7 @@ class Subtask(models.Model):
     
 
 class Reviews(models.Model):
+    title = models.CharField(null=True, blank=False, max_length= 50)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     review = models.TextField(max_length=50, blank=False)
     
