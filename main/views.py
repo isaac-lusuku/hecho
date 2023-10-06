@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from .models import *
-from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -81,6 +80,55 @@ def login_page(request):
     context = {}
     return render(request, "main/login_page.html", context)
 
+# remove this tommorow
+def login_page(request):
+    if request.method == "POST":
+        user_name = request.POST["username"]
+        password = request.POST["password"]
+
+        user = User.objects.get(username= user_name)
+        if user is not None:
+            authenticate(request, username=user_name, password=password)
+            login(request, user)
+            return redirect("home")
+        else:
+            # messages.error(request, "user doesnot not exist")
+            return redirect('login_page')
+    
+    context = {}
+    return render(request, "main/login_page.html", context)
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure-oa%&5uapucjfb6=-pcnk(k1)w+o+d$85ljilt!8ki$%2z3_$#s'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = []
+
+
+# Application definition
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'main',
+    'rest_framework',
+
+]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
 def logout(request):
     logout(request)
