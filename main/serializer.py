@@ -4,9 +4,11 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(ModelSerializer):
+    # snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
     class Meta:
         model = User
-        fields = ["username"]
+        fields = "__all__"
+        extra_kwags = {'password':{'write_only':True}}
 
 
 class ProfileSerializer(ModelSerializer):

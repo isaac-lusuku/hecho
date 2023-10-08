@@ -14,6 +14,18 @@ from rest_framework.response import Response
 from rest_framework import status
 
 
+@api_view(["POST"])
+def register(request):
+
+    if request.method == "POST":
+        c_data = UserSerializer(data=request.data)
+
+        if c_data.is_valid():
+            c_data.save()
+            return Response(status.HTTP_201_CREATED)
+
+
+
 @api_view(["GET", "POST", "PUT", "DELETE"])
 def reviews(request):
     # requsting for reviews
@@ -80,77 +92,11 @@ def login_page(request):
     context = {}
     return render(request, "main/login_page.html", context)
 
-# remove this tommorow
-def login_page(request):
-    if request.method == "POST":
-        user_name = request.POST["username"]
-        password = request.POST["password"]
-
-        user = User.objects.get(username= user_name)
-        if user is not None:
-            authenticate(request, username=user_name, password=password)
-            login(request, user)
-            return redirect("home")
-        else:
-            # messages.error(request, "user doesnot not exist")
-            return redirect('login_page')
-    
-    context = {}
-    return render(request, "main/login_page.html", context)
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-oa%&5uapucjfb6=-pcnk(k1)w+o+d$85ljilt!8ki$%2z3_$#s'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
-# Application definition
-
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'main',
-    'rest_framework',
-
-]
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
-}
+#
 
 def logout(request):
     logout(request)
     return redirect("welcome")
-
-
-def signup_page(request):
-    creation = UserCreationForm()
-
-    if request.method == "POST":
-        c_data = UserCreationForm(request.POST)
-
-        if c_data.is_valid():
-            user = c_data.save(commit=False)
-            user.username = user.username.lower()
-            user.save()
-            login(request, user)
-            return redirect('home')
-
-    context = {"creation":creation,}
-    return render(request, "main/signup_page.html", context)
-    
 
 
 @login_required(login_url='login_page')
