@@ -9,12 +9,15 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 from datetime import datetime
 from .serializer import *
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
 
 
 @api_view(["POST"])
+@permission_classes(["AllowAny",])
 def register(request):
 
     if request.method == "POST":
@@ -26,6 +29,7 @@ def register(request):
 
 
 
+@permission_classes([IsAdminUser])
 @api_view(["GET", "POST", "PUT", "DELETE"])
 def reviews(request):
     # requsting for reviews
@@ -41,13 +45,13 @@ def reviews(request):
             serializer.save()
             return(status.HTTP_200_OK)
         
-
+@permission_classes([IsAuthenticated])
 @api_view(["GET", "PUT", "DELETE"])
 def review(request, pk):
 
     # fetching the requested review from the database
     try:
-         review = Reviews.objects.get(pk=pk)
+         review = Reviews.objects.get(id=pk)
     except:
         return Response(status.HTTP_404_NOT_FOUND)
     

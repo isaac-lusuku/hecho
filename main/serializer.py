@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from .models import *
 from django.contrib.auth.models import User
 
@@ -7,7 +8,8 @@ class UserSerializer(ModelSerializer):
     # snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
     class Meta:
         model = User
-        fields = "__all__"
+        id = serializers.ReadOnlyField()
+        fields = ["id", "username", "password"]
         extra_kwags = {'password':{'write_only':True}}
 
 
