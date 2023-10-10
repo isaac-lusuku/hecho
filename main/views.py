@@ -13,11 +13,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.views import APIView
+import jwt
 
 
 
 @api_view(["POST"])
-@permission_classes(["AllowAny",])
+@permission_classes([IsAuthenticated,])
 def register(request):
 
     if request.method == "POST":
@@ -137,6 +139,16 @@ def task_page(request, id):
     task = Task.object.get(id=id)
     name = task.name
     
+
+class MyAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        json_obj = jwt.decode(request.headers["Authorization"],key="secret", algorithms=["HS256"])
+        return Response("json_obj")
+
+
+
     
 
 

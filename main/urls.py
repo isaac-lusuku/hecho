@@ -14,5 +14,6 @@ urlpatterns = [
     path('home/', views.home, name="home"),
     path('user_profile/', views.user_profile, name="user_profile"),
     path('task_page/', views.task_page, name="task_page"),
-    path('review/<int:pk>', views.review, name="review")
+    path('review/<int:pk>', views.review, name="review"),
+    path('test/', views.MyAPIView.as_view(), name="test")
 ]
