@@ -14,7 +14,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView
-import jwt
+from rest_framework_simplejwt.tokens import Token
+from rest_framework_simplejwt.utils import jwt_decode_handler
+
 
 
 
@@ -144,8 +146,21 @@ class MyAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        json_obj = jwt.decode(request.headers["Authorization"],key="secret", algorithms=["HS256"])
-        return Response("json_obj")
+        # auth_header = (request.META.get('HTTP_AUTHORIZATION').split(" "))[1]
+        # json_obj = jwt.decode(auth_header,"secret", algorithms=["HS256"])
+        # return Response(json_obj)
+        authorization_header = request.META.get('HTTP_AUTHORIZATION')
+        if authorization_header and authorization_header.startswith('Bearer '):
+            token = authorization_header.split(' ')[1]
+            try:
+                payload = jwt_decode_handler(Token(token))
+                return Response(payload)
+            except Exception as e:
+                return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'Authorization header missing'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
 
 
 
