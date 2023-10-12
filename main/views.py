@@ -14,9 +14,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import Token
-from rest_framework_simplejwt.utils import jwt_decode_handler
-
+import jwt
 
 
 
@@ -146,15 +144,13 @@ class MyAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # auth_header = (request.META.get('HTTP_AUTHORIZATION').split(" "))[1]
-        # json_obj = jwt.decode(auth_header,"secret", algorithms=["HS256"])
-        # return Response(json_obj)
         authorization_header = request.META.get('HTTP_AUTHORIZATION')
         if authorization_header and authorization_header.startswith('Bearer '):
             token = authorization_header.split(' ')[1]
+            SECRET_KEY = 'django-insecure-oa%&5uapucjfb6=-pcnk(k1)w+o+d$85ljilt!8ki$%2z3_$#s'
             try:
-                payload = jwt_decode_handler(Token(token))
-                return Response(payload)
+                payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+                return Response(payload.get("name"))
             except Exception as e:
                 return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
         else:
