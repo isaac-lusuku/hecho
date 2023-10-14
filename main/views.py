@@ -5,30 +5,30 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .model_forms import *
-from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 from datetime import datetime
 from .serializer import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.views import APIView
 import jwt
 
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated,])
-def register(request):
+# registration of a new user
+class Register(APIView):
+    permission_classes = [AllowAny]
 
-    if request.method == "POST":
-        c_data = UserSerializer(data=request.data)
-
-        if c_data.is_valid():
-            c_data.save()
+    # creating the user
+    def post(self, request):
+        user_data = UserSerializer(data=request.data)
+        if user_data.is_valid():
+            user_data.save()
             return Response(status.HTTP_201_CREATED)
-
+        else:
+            return Response(status.HTTP_406_NOT_ACCEPTABLE)
 
 
 @permission_classes([IsAdminUser])
