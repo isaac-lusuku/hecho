@@ -31,8 +31,8 @@ class Register(APIView):
             return Response(status.HTTP_406_NOT_ACCEPTABLE)
 
 
-@permission_classes([IsAdminUser])
 @api_view(["GET", "POST", "PUT", "DELETE"])
+@permission_classes([IsAdminUser])
 def reviews(request):
     # requsting for reviews
     if request.method == "GET":
@@ -46,6 +46,8 @@ def reviews(request):
         if serializer.is_valid():
             serializer.save()
             return(status.HTTP_200_OK)
+        
+
         
 @permission_classes([IsAuthenticated])
 @api_view(["GET", "PUT", "DELETE"])
@@ -156,7 +158,18 @@ class MyAPIView(APIView):
         else:
             return Response({'error': 'Authorization header missing'}, status=status.HTTP_401_UNAUTHORIZED)
 
-
+urlpatterns = [
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('reviews/', views.reviews, name="welcome_page"),
+    path('login_page/', views.login_page, name="login_page"),
+    path('register/', views.Register.as_view(), name="register"),
+    path('home/', views.home, name="home"),
+    path('user_profile/', views.user_profile, name="user_profile"),
+    path('task_page/', views.task_page, name="task_page"),
+    path('review/<int:pk>', views.review, name="review"),
+    path('test/', views.MyAPIView.as_view(), name="test")
+]
 
 
 

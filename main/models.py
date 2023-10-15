@@ -48,7 +48,7 @@ class Task(models.Model):
     
     class Meta:
         ordering = ['-deadline']
-    
+     
 
 class Subtask(models.Model):
     name = models.CharField(max_length=20, blank=False)
